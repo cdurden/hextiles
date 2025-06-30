@@ -1,0 +1,45 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #f0f0f0;
+  margin: 0;
+  padding: 20px;
+}
+
+#hexGrid {
+  position: relative;
+  width: 800px;
+  height: 800px;
+  margin: 0 auto;
+  background: #ddd;
+  border: 1px solid #aaa;
+}
+
+.hex {
+  position: absolute;
+  width: 115px;
+  height: 115px;
+  background: #3498db;
+  color: white;
+  font-weight: bold;
+  clip-path: polygon(
+    50% 0%, 93% 25%, 93% 75%,
+    50% 100%, 7% 75%, 7% 25%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  user-select: none;
+  transition: transform 0.2s;
+}
+
+.hex:active {
+  cursor: grabbing;
+  transform: scale(1.05);
+}
+
+.dragging {
+  opacity: 0.5;
+  z-index: 999;
+}
