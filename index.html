@@ -1,14 +1,116 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Hexagon Tile Grid</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hexagonal Tile Diagram with Dynamic Grid</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="script.js"></script>
+    <link href="styles.css" rel="stylesheet">
+    <style>
+    </style>
 <body>
-  <h1>Hexagon Tile Grid</h1>
-  <div id="hexGrid"></div>
+    <div class="hex-container" id="hexContainer" style="cursor: default;">
+        <div class="hex-grid" id="hexGrid" style="transform: translate(-1541.5px, -2116px) scale(1);">
+	</div>
+        
+        <div class="filter-panel">
+            <h3 class="text-lg font-bold mb-3">Filters</h3>
+            
+            <div class="filter-section" id="column1FilterSection">
+                <div class="filter-header" onclick="toggleFilterSection('column1FilterContent')">
+                    <div>
+                        <span class="font-medium">Column 1</span>
+                        <span class="filter-badge" id="column1FilterCount">7</span>
+                    </div>
+                    <svg class="chevron w-5 h-5 text-gray-500 open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="filter-content" id="column1FilterContent">
+                    <div class="filter-actions">
+                        <button class="text-sm text-blue-600 hover:text-blue-800" onclick="selectAllFilters('column1')">Select All</button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800" onclick="clearAllFilters('column1')">Clear All</button>
+                    </div>
+                    <div id="column1Filters"><div class="filter-checkbox"><input type="checkbox" id="column1-1" value="1"><label for="column1-1">1</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-2" value="2"><label for="column1-2">2</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-3" value="3"><label for="column1-3">3</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-4" value="4"><label for="column1-4">4</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-5" value="5"><label for="column1-5">5</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-6" value="6"><label for="column1-6">6</label></div><div class="filter-checkbox"><input type="checkbox" id="column1-7" value="7"><label for="column1-7">7</label></div></div>
+                </div>
+            </div>
+            
+            <div class="filter-section" id="column2FilterSection">
+                <div class="filter-header" onclick="toggleFilterSection('column2FilterContent')">
+                    <div>
+                        <span class="font-medium">Column 2</span>
+                        <span class="filter-badge" id="column2FilterCount">7</span>
+                    </div>
+                    <svg class="chevron w-5 h-5 text-gray-500 open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div class="filter-content" id="column2FilterContent">
+                    <div class="filter-actions">
+                        <button class="text-sm text-blue-600 hover:text-blue-800" onclick="selectAllFilters('column2')">Select All</button>
+                        <button class="text-sm text-blue-600 hover:text-blue-800" onclick="clearAllFilters('column2')">Clear All</button>
+                    </div>
+                    <div id="column2Filters"><div class="filter-checkbox"><input type="checkbox" id="column2-data" value="data"><label for="column2-data">data</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-dev" value="dev"><label for="column2-dev">dev</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-finance" value="finance"><label for="column2-finance">finance</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-marketing" value="marketing"><label for="column2-marketing">marketing</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-ops" value="ops"><label for="column2-ops">ops</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-sales" value="sales"><label for="column2-sales">sales</label></div><div class="filter-checkbox"><input type="checkbox" id="column2-support" value="support"><label for="column2-support">support</label></div></div>
+                </div>
+            </div>
+            
+            <div class="visible-count" id="visibleCount">Showing 7 of 7 hexagons</div>
+        </div>
+        
+        <div class="data-panel">
+            <h3 class="text-lg font-bold mb-2">CSV Data Source</h3>
+            <div class="column-info">
+                <strong>Column Structure:</strong><br>
+                1: ID<br>
+                4: Title<br>
+                5: Content<br>
+                7: X Position<br>
+                8: Y Position
+            </div>
+            <input type="text" id="csvUrl" class="url-input" value="https://raw.githubusercontent.com/cdurden/mathed/refs/heads/main/MinnesotaMathStandards2022.csv">
+            <div class="flex gap-2 mb-3">
+                <button id="loadFromUrl" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex-1">Load from URL</button>
+                <button id="refreshData" class="bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="errorMessage" class="error-message">Failed to load CSV data. Please check the URL and try again.</div>
+            <textarea id="spreadsheetData" class="mb-3">1,data,data,Product Strategy,Our product strategy focuses on creating innovative solutions that address real customer needs while maintaining competitive pricing in the market.,data,2500,2300
+2,marketing,data,Marketing,Digital marketing campaigns have increased our brand awareness by 45% in the last quarter with social media engagement up by 60%.,data,2700,2400
+3,sales,data,Sales,The sales team exceeded targets by 20% this quarter through implementation of new CRM tools and improved follow-up processes.,data,2300,2400
+4,dev,tech,Development,Our agile development team is currently working on three key features requested by customers with expected delivery in Q3.,data,2500,2500
+5,support,data,Customer Support,Customer satisfaction ratings have improved to 92% following the implementation of our new ticketing system and support protocols.,data,2700,2600
+6,finance,data,Finance,Q2 financial results show a 15% increase in revenue and 8% reduction in operational costs through strategic resource allocation.,data,2300,2600
+7,ops,tech,Operations,Process optimization initiatives have reduced production time by 30% while maintaining our high quality standards.,data,2500,2700</textarea>
+            <div class="flex gap-2">
+                <button id="applyData" class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors flex-1">Apply Data</button>
+                <button id="copyCSV" class="bg-gray-600 text-white py-2 px-4 rounded-lg hover:bg-gray-700 transition-colors">Copy Updated CSV</button>
+            </div>
+            <div id="copySuccess" class="copy-success mt-2">CSV copied to clipboard!</div>
+        </div>
+        
+        <div class="controls">
+            <button id="resetBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors">Reset Positions</button>
+            <button id="toggleGridBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors">Toggle Grid</button>
+        </div>
+        
+        <div class="zoom-controls">
+            <div class="zoom-buttons">
+                <button id="zoomInBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors">+</button>
+                <button id="zoomOutBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors">-</button>
+                <button id="resetViewBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded-lg transition-colors">Reset View</button>
+            </div>
+            <div id="zoomLevel" class="zoom-level">Zoom: 100%</div>
+        </div>
 
-  <script src="script.js"></script>
-</body>
-</html>
+        <div class="loading-indicator" id="loadingIndicator">
+            <div class="spinner"></div>
+            <span>Loading data...</span>
+        </div>
+    </div>
+
+    <script>
+    </script>
+
+</body></html>
